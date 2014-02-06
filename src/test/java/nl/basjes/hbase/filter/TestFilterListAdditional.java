@@ -37,11 +37,13 @@ public class TestFilterListAdditional {
    */
   @Test
   public void testFilterListPrefixOnly() throws IOException {
+    String prefix = "Row C";
+
     HTable table = new HTable(TestFilterListAdditional.conf, tableName);
     assertTrue("Fail to create the table", admin.tableExists(tableName));
 
     FilterList flist = new FilterList(FilterList.Operator.MUST_PASS_ONE);
-    flist.addFilter(new PrefixFilter("Row C".getBytes()));
+    flist.addFilter(new PrefixFilter(prefix.getBytes()));
 
     Scan scan = new Scan();
     scan.setFilter(flist);
@@ -49,8 +51,8 @@ public class TestFilterListAdditional {
     ResultScanner scanner = table.getScanner(scan);
 
     for (Result r: scanner){
-      System.out.println(r.toString());
-      assertEquals("Row CC", Bytes.toStringBinary(r.getRow()));
+      assertTrue("This row does not start with \""+prefix+"\": "+r.toString(),
+          Bytes.toStringBinary(r.getRow()).startsWith(prefix));
     }
 
     table.close();
@@ -67,7 +69,7 @@ public class TestFilterListAdditional {
     assertTrue("Fail to create the table", admin.tableExists(tableName));
 
     FilterList flist = new FilterList(FilterList.Operator.MUST_PASS_ONE);
-    flist.addFilter(new PrefixFilter("Row C".getBytes()));
+    flist.addFilter(new AlwaysNextColFilter());
 
     Scan scan = new Scan();
     scan.setFilter(flist);
@@ -75,8 +77,7 @@ public class TestFilterListAdditional {
     ResultScanner scanner = table.getScanner(scan);
 
     for (Result r: scanner){
-      System.out.println(r.toString());
-      fail("The result set MUST be empty");
+      fail("The result set MUST be empty, instead we got "+r.toString());
     }
 
     table.close();
@@ -89,11 +90,13 @@ public class TestFilterListAdditional {
    */
   @Test
   public void testFilterListTwoFiltersMustPassOne() throws IOException {
+    String prefix = "Row C";
+
     HTable table = new HTable(TestFilterListAdditional.conf, tableName);
     assertTrue("Fail to create the table", admin.tableExists(tableName));
 
     FilterList flist = new FilterList(FilterList.Operator.MUST_PASS_ONE);
-    flist.addFilter(new PrefixFilter("Row C".getBytes()));
+    flist.addFilter(new PrefixFilter(prefix.getBytes()));
     flist.addFilter(new AlwaysNextColFilter());
 
     Scan scan = new Scan();
@@ -102,8 +105,8 @@ public class TestFilterListAdditional {
     ResultScanner scanner = table.getScanner(scan);
 
     for (Result r: scanner){
-      System.out.println(r.toString());
-      assertEquals("Row CC", Bytes.toStringBinary(r.getRow()));
+      assertTrue("This row does not start with \""+prefix+"\": "+r.toString(),
+                 Bytes.toStringBinary(r.getRow()).startsWith(prefix));
     }
 
     table.close();
