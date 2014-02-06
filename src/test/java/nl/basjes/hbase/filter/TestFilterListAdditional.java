@@ -51,7 +51,7 @@ public class TestFilterListAdditional {
     ResultScanner scanner = table.getScanner(scan);
 
     for (Result r: scanner){
-      assertTrue("This row does not start with \""+prefix+"\": "+r.toString(),
+      assertTrue("The rowid of this row does not start with \""+prefix+"\": "+r.toString(),
           Bytes.toStringBinary(r.getRow()).startsWith(prefix));
     }
 
@@ -105,7 +105,7 @@ public class TestFilterListAdditional {
     ResultScanner scanner = table.getScanner(scan);
 
     for (Result r: scanner){
-      assertTrue("This row does not start with \""+prefix+"\": "+r.toString(),
+      assertTrue("The rowid of this row does not start with \""+prefix+"\": "+r.toString(),
                  Bytes.toStringBinary(r.getRow()).startsWith(prefix));
     }
 
