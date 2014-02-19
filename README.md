@@ -1,3 +1,7 @@
+FIXED !!
+========
+It turns out this was an actual bug in the PrefixFilter and it has been fixed in https://issues.apache.org/jira/browse/HBASE-10485
+
 HBase-filter-problem
 ====================
 
